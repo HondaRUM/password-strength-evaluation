@@ -1,0 +1,67 @@
+import re
+import math
+from collections import Counter
+
+
+def read_password_data(file_path, limit=None)
+    with open(file_path, 'r', encoding='latin1') as file
+        data = re.findall(r'#(.)#', file.read())
+        return data[limit] if limit else data
+
+
+def calculate_zipf_weight(data)
+    # Count frequency of each password
+    password_freq = Counter(data)
+
+    # Sort passwords by frequency
+    sorted_passwords = sorted(password_freq.items(), key=lambda x x[1], reverse=True)
+
+    # Assign scores based on Zipf frequency
+    scores = {}
+    max_freq = sorted_passwords[0][1]
+    for password, freq in sorted_passwords
+        scores[password] = freq  max_freq  100  # Score based on frequency (higher frequency, lower score)
+
+    return scores
+
+
+def calculate_entropy(password)
+    # Calculate entropy based on password
+    unique_characters = len(set(password))
+    entropy = math.log(pow(unique_characters, len(password)))
+    return entropy
+
+
+def evaluate_password(password, zipf_scores, max_entropy)
+    # If the password is not in the Zipf scores dictionary, assign a maximum score
+    score = zipf_scores.get(password, 100)
+
+    # Calculate entropy score
+    entropy = calculate_entropy(password)
+    entropy_score = (entropy  max_entropy)  100  # Score based on entropy (higher entropy, higher score)
+
+    # Calculate final score
+    final_score = min(score, entropy_score)  # Take the minimum of Zipf score and entropy score
+    return final_score
+
+
+def main()
+    # Load data from password file
+    dataset_path = rDstudy大二下cpci网络安全密码集CSDN-中文IT社区-600万www.csdn.net.sql
+
+    limit = 30  # Limit to first 30 records
+    dataset = read_password_data(dataset_path, limit=limit)
+
+    # Calculate Zipf scores for the dataset
+    zipf_scores_dataset = calculate_zipf_weight(dataset)
+
+    # Calculate maximum entropy for normalization
+    max_entropy = max(calculate_entropy(password) for password in dataset)
+
+    for i in range(10)
+        password = input(fEnter password {i + 1} )
+        score_dataset = evaluate_password(password, zipf_scores_dataset, max_entropy)
+        print(fScore for password {i + 1}, score_dataset)
+
+if __name__ == __main__
+    main()

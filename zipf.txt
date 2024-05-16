@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import Counter
+from scipy.stats import linregress
+
+# 定义函数，从txt文件中提取冒号后的数据
+def extract_data_from_txt(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+        data = [line.split(':')[1].strip() for line in lines if ':' in line]
+    return data
+
+# 打开单个txt文件并绘制图表
+file_path = r'D:\study\大二下\cpci网络安全\密码集\Wishbone.io 8kk.txt'  # 请将文件路径替换为实际路径
+
+plt.figure(figsize=(10, 6))  # 设置图表大小
+
+# 提取数据
+data = extract_data_from_txt(file_path)
+
+# 统计字符串出现的次数
+counter = Counter(data)
+filtered_counter = {k: v for k, v in counter.items() if v >= 5}
+sorted_counts = sorted(filtered_counter.values(), reverse=True)[:1000]  # 取前1000个最高的计数
+
+x = np.arange(1, len(sorted_counts) + 1)
+
+# 将横坐标转换为对数尺度
+log_x = np.log10(x)
+
+# 计算对数频率
+log_y = np.log10(sorted_counts)
+
+# 执行线性回归
+slope, intercept, r_value, p_value, std_err = linregress(log_x, log_y)
+
+# 绘制真实数据（对数尺度下）
+plt.scatter(log_x, log_y, label='Wishbone', color='blue', marker='.', s=100)  # 红色点的尺寸大一点，并改为蓝色
+
+# 绘制线性拟合线（去除对数）
+fit_x = np.linspace(0, 3, 100)  # 0到10^3的范围
+fit_y = intercept + slope * fit_x
+plt.plot(fit_x, fit_y, label=f'$y = {10**intercept:.2f} / x^{{{-slope:.2f}}}$', color='black')
+
+# 设置横坐标和纵坐标的范围和标签
+plt.xlim(-0.05, 3)
+plt.ylim(1.8, 4.7)  # 纵坐标范围从10^2到10^4，留出一些空间
+plt.xticks(np.arange(4), ['$10^0$', '$10^1$', '$10^2$', '$10^3$'])
+plt.yticks(np.arange(2, 5), ['$10^2$', '$10^3$', '$10^4$'])
+
+plt.xlabel('Rank of password')
+plt.ylabel('Frequency of password')
+plt.legend()
+
+
+
+plt.gca().spines['top'].set_visible(False)  # 关闭图例的上边框
+plt.gca().spines['right'].set_visible(False)  # 关闭图例的右边框
+
+plt.show()

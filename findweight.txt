@@ -1,0 +1,73 @@
+import math
+from collections import Counter
+
+def read_password_data(file_path, limit=None):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = [line.strip().split(':', 1) for line in file if ':' in line]
+        return data[:limit] if limit else data
+
+def calculate_zipf_weight(data):
+    # Count frequency of each password
+    password_freq = Counter([password for _, password in data])
+
+    # Sort passwords by frequency
+    sorted_passwords = sorted(password_freq.items(), key=lambda x: x[1], reverse=True)
+
+    # Calculate Zipf weight for each password
+    weights = {password: 1 / (index + 1) for index, (password, _) in enumerate(sorted_passwords)}
+
+    # Calculate average Zipf weight
+    total_zipf_weight = sum(weights.values())
+    average_zipf_weight = total_zipf_weight / len(weights)
+
+    return average_zipf_weight
+
+def calculate_entropy_weight(data):
+    # Count frequency of each character in passwords
+    char_freq = Counter(''.join([password for _, password in data]))
+
+    # Calculate probability of each character
+    total_passwords = sum(char_freq.values())
+    char_prob = {char: freq / total_passwords for char, freq in char_freq.items()}
+
+    # Calculate entropy for each character
+    entropy = {char: -prob * math.log2(prob) for char, prob in char_prob.items()}
+
+    # Calculate entropy weight for each character
+    total_entropy = sum(entropy.values())
+    average_entropy_weight = total_entropy / len(entropy)
+
+    return average_entropy_weight
+
+def scale_weight(weight):
+    if weight > 0.9999999:
+        return 0.9999999
+    elif weight < 0.0000001:
+        return 0.0000001
+    else:
+        return weight
+
+def main():
+    # Load data from password files
+    dataset1_path = r"D:\study\大二下\cpci网络安全\密码集\300k Yahoo.com .txt"
+    dataset2_path = r"D:\study\大二下\cpci网络安全\密码集\Wishbone.io 8kk.txt"
+
+    limit = 300000  # Limit to first 20 records
+    dataset1 = read_password_data(dataset1_path, limit=limit)
+    dataset2 = read_password_data(dataset2_path, limit=limit)
+
+    average_zipf_weight_dataset1 = calculate_zipf_weight(dataset1)
+    average_entropy_weight_dataset1 = calculate_entropy_weight(dataset1)
+
+    average_zipf_weight_dataset2 = calculate_zipf_weight(dataset2)
+    average_entropy_weight_dataset2 = calculate_entropy_weight(dataset2)
+
+    # Calculate average of Zipf weights and entropy weights
+    average_zipf_weight = scale_weight((average_zipf_weight_dataset1 + average_zipf_weight_dataset2) / 2)
+    average_entropy_weight = scale_weight((average_entropy_weight_dataset1 + average_entropy_weight_dataset2) / 2)
+
+    print("Perfect Zipf weight :", average_zipf_weight)
+    print("Perfect entropy weight :", average_entropy_weight)
+
+if __name__ == "__main__":
+    main()
