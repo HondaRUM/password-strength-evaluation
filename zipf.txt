@@ -11,7 +11,7 @@ def extract_data_from_txt(file_path):
     return data
 
 # 打开单个txt文件并绘制图表
-file_path = r'D:\study\大二下\cpci网络安全\密码集\Wishbone.io 8kk.txt'  # 请将文件路径替换为实际路径
+file_path = r'XXX.PATH'  # 请将文件路径替换为实际路径
 
 plt.figure(figsize=(10, 6))  # 设置图表大小
 
