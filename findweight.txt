@@ -49,8 +49,8 @@ def scale_weight(weight):
 
 def main():
     # Load data from password files
-    dataset1_path = r"D:\study\大二下\cpci网络安全\密码集\300k Yahoo.com .txt"
-    dataset2_path = r"D:\study\大二下\cpci网络安全\密码集\Wishbone.io 8kk.txt"
+    dataset1_path = r"XXX.PATH"
+    dataset2_path = r"XXX.PATH"
 
     limit = 300000  # Limit to first 20 records
     dataset1 = read_password_data(dataset1_path, limit=limit)
