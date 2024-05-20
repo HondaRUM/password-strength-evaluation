@@ -47,7 +47,7 @@ def evaluate_password(password, zipf_scores, max_entropy)
 
 def main()
     # Load data from password file
-    dataset_path = rDstudy大二下cpci网络安全密码集CSDN-中文IT社区-600万www.csdn.net.sql
+    dataset_path = rDstudyXXX.PATH
 
     limit = 30  # Limit to first 30 records
     dataset = read_password_data(dataset_path, limit=limit)
